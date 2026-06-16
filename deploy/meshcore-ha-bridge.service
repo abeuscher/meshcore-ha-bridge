@@ -1,0 +1,33 @@
+# systemd unit for running the bridge unattended on the on-site Linux server.
+#
+# Install:
+#   sudo cp deploy/meshcore-ha-bridge.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now meshcore-ha-bridge
+#
+# Logs (timestamped, to stdout -> journal):
+#   journalctl -u meshcore-ha-bridge -f
+#
+# Adjust User, WorkingDirectory, and the venv path to match the deployment.
+# Keep the MQTT password out of this file and out of git: put it in
+# /etc/meshcore-ha-bridge.env as  MESHCORE_MQTT_PASSWORD=...  (chmod 600).
+
+[Unit]
+Description=MeshCore -> MQTT bridge for Home Assistant
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=meshcore
+WorkingDirectory=/opt/meshcore-ha-bridge
+EnvironmentFile=-/etc/meshcore-ha-bridge.env
+ExecStart=/opt/meshcore-ha-bridge/.venv/bin/python -m meshcore_ha_bridge -c /opt/meshcore-ha-bridge/config.yaml
+Restart=always
+RestartSec=5
+# Let the bridge publish its offline LWT/status and close cleanly on stop.
+KillSignal=SIGTERM
+TimeoutStopSec=15
+
+[Install]
+WantedBy=multi-user.target

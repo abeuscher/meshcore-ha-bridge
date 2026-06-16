@@ -1,0 +1,40 @@
+# meshcore-ha-bridge example configuration.
+#
+# Copy this to `config.yaml` and adjust for your host:
+#     cp config.example.yaml config.yaml
+#
+# Every value below can also be overridden by an environment variable (handy for
+# Docker / systemd and for keeping secrets out of files). The env var name is the
+# upper-cased path joined with underscores and prefixed with MESHCORE_, e.g.:
+#     serial.port    -> MESHCORE_SERIAL_PORT
+#     mqtt.host      -> MESHCORE_MQTT_HOST
+#     mqtt.password  -> MESHCORE_MQTT_PASSWORD
+#
+# Do NOT commit a real MQTT password. Leave it blank here and supply it at
+# runtime via MESHCORE_MQTT_PASSWORD (see the README).
+
+serial:
+  # USB serial device for the MeshCore gateway node.
+  #   macOS: /dev/cu.usbmodem14301   (the number is not stable across reconnects)
+  #   Linux: /dev/ttyACM0  or  /dev/ttyUSB0
+  # Set to "auto" to scan attached serial ports and connect to the first one
+  # that answers as a MeshCore serial companion.
+  port: "/dev/cu.usbmodem14301"
+  baud: 115200
+
+mqtt:
+  host: "192.168.8.209"        # broker IP (localhost on the eventual server)
+  port: 1883
+  username: "hauser"
+  password: ""                 # leave blank; set MESHCORE_MQTT_PASSWORD instead
+  client_id: "meshcore-ha-bridge"
+  base_topic: "meshcore"       # topic prefix for everything this bridge publishes
+  qos: 0                       # QoS 0 is fine for the POC
+
+# Backoff used when the gateway serial connection drops and we reconnect.
+reconnect:
+  initial_delay: 2.0           # seconds, first retry
+  max_delay: 60.0              # seconds, ceiling for exponential backoff
+
+logging:
+  level: "INFO"                # DEBUG for per-packet detail, INFO for normal use
