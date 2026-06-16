@@ -1,0 +1,8 @@
+# meshcore-ha-bridge runtime dependencies.
+# Pinned to compatible major ranges; this is monitoring infrastructure meant to
+# run untouched for months, so we avoid surprise breaking changes on reinstall.
+
+meshcore>=2.3,<3      # Official MeshCore companion library (serial/BLE/TCP + event model)
+paho-mqtt>=2.1,<3     # MQTT client for publishing to Mosquitto
+PyYAML>=6,<7          # config.yaml parsing
+pyserial>=3.5         # serial port enumeration for --port auto-detection

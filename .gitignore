@@ -1,0 +1,16 @@
+# Local config holds the real broker IP and must never carry the password.
+config.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+.eggs/
+
+# Editor / OS noise
+.DS_Store
+.idea/
+.vscode/
